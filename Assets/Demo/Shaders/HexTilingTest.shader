@@ -2,13 +2,13 @@ Shader "HexTilingTest"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" { }
 
         [Header(Hex Tile)][Space]
-        _Rotate ("Rotate", Range(0,1)) = 0
+        _Rotate ("Rotate", Range(0, 1)) = 0
 
         [Space]
-        [KeywordEnum(OFF,LOW,MEDIUM,HIGH)]_HexTilingQuality ("HexTilingQuality", Float) = 1.0
+        [KeywordEnum(OFF, LOW, MEDIUM, HIGH)]_HexTilingQuality ("HexTilingQuality", Float) = 1.0
         [Space]
         [Toggle]_ShowWeightMask ("Show Hex Tile Weight Mask", Float) = 0
     }
@@ -44,18 +44,18 @@ Shader "HexTilingTest"
 
             struct Attributes
             {
-                float4 positionOS               : POSITION;
-                float4 uv                       : TEXCOORD0;
+                float4 positionOS : POSITION;
+                float4 uv : TEXCOORD0;
             };
             
             struct Varyings
             {
-                float4 uv                       : TEXCOORD0;    
-                float4 positionCS               : SV_POSITION;
+                float4 uv : TEXCOORD0;
+                float4 positionCS : SV_POSITION;
             };
             
 
-            TEXTURE2D(_MainTex);                 SamplerState sampler_linear_repeat;                
+            TEXTURE2D(_MainTex);                 SamplerState sampler_linear_repeat;
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
@@ -67,7 +67,7 @@ Shader "HexTilingTest"
             {
                 Varyings output = (Varyings)0;
 
-                output.uv.xy = TRANSFORM_TEX(input.uv,_MainTex);
+                output.uv.xy = TRANSFORM_TEX(input.uv, _MainTex);
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
 
                 return output;
@@ -91,18 +91,18 @@ Shader "HexTilingTest"
                 #endif
 
                 #if defined(_HEXTILINGQUALITY_LOW)
-                    hex2colTex(color,weights,_MainTex,sampler_linear_repeat,uv,(_Rotate - 0.5) * PI * 2,HEXTILIING_R_LOW);
+                    hex2colTex(color, weights, _MainTex, sampler_linear_repeat, uv, (_Rotate - 0.5) * PI * 2, HEXTILIING_R_LOW);
                 #endif
 
                 #if defined(_HEXTILINGQUALITY_MEDIUM)
-                    hex2colTex(color,weights,_MainTex,sampler_linear_repeat,uv,(_Rotate - 0.5) * PI * 2,HEXTILIING_R_MEDIUM);
+                    hex2colTex(color, weights, _MainTex, sampler_linear_repeat, uv, (_Rotate - 0.5) * PI * 2, HEXTILIING_R_MEDIUM);
                 #endif
 
                 #if defined(_HEXTILINGQUALITY_HIGH)
-                    hex2colTex(color,weights,_MainTex,sampler_linear_repeat,uv,(_Rotate - 0.5) * PI * 2,HEXTILIING_R_HIGH);
+                    hex2colTex(color, weights, _MainTex, sampler_linear_repeat, uv, (_Rotate - 0.5) * PI * 2, HEXTILIING_R_HIGH);
                 #endif
 
-                return lerp(color,float4(weights,1.0),_ShowWeightMask);
+                return lerp(color, float4(weights, 1.0), _ShowWeightMask);
             }
 
             ENDHLSL

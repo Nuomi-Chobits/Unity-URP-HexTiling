@@ -86,7 +86,7 @@ Material:
     - _NormalScale1: 1
     - _NormalScale2: 1
     - _NormalScale3: 1
-    - _Rotate: 0.906
+    - _Rotate: 0.5
     - _ShowWeightMask: 0
     - _UseHashUV0: 0
     - _UseHashUV1: 0

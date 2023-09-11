@@ -16,7 +16,7 @@ float2 hash(float2 p)
 float2 MakeCenUV(int2 vertex)
 {
     float2x2 invSkewMat = float2x2(1.0, 0.5, 0.0, 1.0 / 1.15470054);
-    return mul(invSkewMat, vertex) / (2.0 * sqrt(3.0));
+    return mul(invSkewMat, vertex) * 0.2887;
 }
 
 float2x2 LoadRot2x2(int2 index, float rotStrength)
@@ -40,11 +40,11 @@ float3 Gain3(float3 x, float r)
 {
     // Increase contrast when r > 0.5 and
     // reduce contrast if less.
-    float k = log(1 - r) / log(0.5);
+    float k = -3.3219 * log(1 - r) ;
     float3 s = 2 * step(0.5, x);
     float3 m = 2 * (1 - s);
     float3 res = 0.5 * s + 0.25 * m * pow(max(0.0, s + x * m), k);
-    return res.xyz / (res.x + res.y + res.z);
+    return res.xyz * rcp(res.x + res.y + res.z);
 }
 
 // Input: vM is the tangent-space normal in [-1, 1]
@@ -59,7 +59,7 @@ float2 TspaceNormalToDerivative(float3 vM)
     // Set to match positive vertical texture coordinate axis.
     const bool gFlipVertDeriv = false;
     const float s = gFlipVertDeriv ? - 1.0 : 1.0;
-    return -float2(vM.x, s * vM.y) / z_ma;
+    return -float2(vM.x, s * vM.y) * rcp(z_ma);
 }
 
 float2 sampleDeriv(Texture2D normalmap, SamplerState samp, float2 uv, float2 dUVdx, float2 dUVdy)
@@ -73,7 +73,7 @@ void TriangleGrid(out float w1, out float w2, out float w3, out int2 vertex1, ou
 {
     // Scaling of the input
     // controls the size of the input with respect to the size of the tiles.
-    uv *= 2.0 * sqrt(3.0);
+    uv *= 3.4641;
 
     // Skew input space into simplex triangle grid.
     const float2x2 gridToSkewedGrid = float2x2(1.0, -0.57735027, 0.0, 1.15470054);
@@ -151,7 +151,7 @@ void bumphex2derivNMap(out float2 deriv, out float3 weights, Texture2D nmap, Sam
     // Produce sine to the angle between the conceptual normal
     // in tangent space and the Z-axis.
     float3 D = float3(dot(d1, d1), dot(d2, d2), dot(d3, d3));
-    float3 Dw = sqrt(D / (1.0 + D));
+    float3 Dw = sqrt(D * rcp(1.0 + D));
 
     float g_fallOffContrast = 0.6;
     float g_exp = 7.0;
@@ -159,7 +159,7 @@ void bumphex2derivNMap(out float2 deriv, out float3 weights, Texture2D nmap, Sam
     Dw = lerp(1.0, Dw, g_fallOffContrast); // 0.6
     float3 W = Dw * pow(float3(w1, w2, w3), g_exp); // 7
 
-    W /= (W.x + W.y + W.z);
+    W *= rcp(W.x + W.y + W.z);
     if (r != 0.5) W = Gain3(W, r);
 
     deriv = W.x * d1 + W.y * d2 + W.z * d3;
@@ -208,7 +208,7 @@ void hex2colTex(out float4 color, out float3 weights, Texture2D tex, SamplerStat
 
     Dw = lerp(1.0, Dw, g_fallOffContrast); // 0.6
     float3 W = Dw * pow(float3(w1, w2, w3), g_exp); // 7
-    W /= (W.x + W.y + W.z);
+    W *= rcp(W.x + W.y + W.z);
     if (r != 0.5) W = Gain3(W, r);
 
     color = W.x * c1 + W.y * c2 + W.z * c3;
