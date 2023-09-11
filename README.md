@@ -1,4 +1,4 @@
-![preview ](https://github.com/Nuomi-Chobits/Unity-URP-HexTiling/assets/89976115/c32b7b75-0be9-4df5-be5b-ab53bdfe7af1)# Unity-URP-HexTiling
+# Unity-URP-HexTiling
 
 Hextile is a method for avoiding repetition when tiling textures.
 
