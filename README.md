@@ -16,6 +16,6 @@ Hextile is a method for avoiding repetition when tiling textures.
 
 - [original code](https://github.com/mmikk/hextile-demo).
 
-- [Paper](https://jcgt.org/published/0011/03/05/) 
+- [Practical Real-Time Hex-Tiling](https://jcgt.org/published/0011/03/05/) 
 
 
